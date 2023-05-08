@@ -1,5 +1,5 @@
 # chesst
-A **S**tateful **St**ockfish Chess engine terminal user interface.
+A **S**tateful **St**ockfish **Chess** engine terminal user interface.
 
 ## Usage
 text
