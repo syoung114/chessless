@@ -1,5 +1,5 @@
 # chesst
-Basic stateful interface with the Stockfish chess engine
+A **S**tateful **St**ockfish Chess engine terminal user interface.
 
 ## Usage
 text
