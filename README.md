@@ -5,7 +5,7 @@ To access most of its commands, Stockfish is normally run interactively as a pro
 
 Also includes a script that you can run to play chess against Stockfish on a curses-style interface. Currently this script is just a proof-of-concept with basic features.
 
-![playchess example](doc/playchess.GIF)
+![playchess example](doc/playchess.gif)
 
 ## Usage
 To run Stockfish stateless in this directory, run the following code:
