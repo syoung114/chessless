@@ -1,7 +1,7 @@
 import sys
 import subprocess
 import queue
-import time
+from time import sleep
 from threading import Thread
 
 class SubprocessCM:
@@ -21,7 +21,7 @@ class SubprocessCM:
         if self.process:
             self.process.terminate()
 
-def undaemonize(pathargs, stdins):
+def undaemonize(pathargs, stdins, just_last_line=False):
     '''
     Runs a normally interactive terminal program as a single command.
     Note that this function has security implications if it is used in a larger program. Arbitrary execution.
@@ -63,9 +63,9 @@ def undaemonize(pathargs, stdins):
             except queue.Empty:
                 output_fails += 1
             else:
-                stdout += line
-                output_fails = 0
-            time.sleep(0.1) #TODO find more elegant solution to sleep
+                stdout = line if just_last_line else stdout + line
+                outut_fails = 0
+            sleep(0.1) #TODO find more elegant solution to sleep
 
         return stdout
 
@@ -79,12 +79,15 @@ if __name__ == '__main__':
     parser.add_argument('-dp', '--pathargs_delim', type=str, default=default_delim, help='The delimiter sequence that denotes each element in the pathargs string')
     parser.add_argument('-ds', '--stdins_delim', type=str, default=default_delim, help='The delimiter sequence that denotes each element in the stdins string')
 
+    parser.add_argument('--succinct', action='store_true', help='Print the last line, not the entire stdout')
+
     #tokenise and store the values
     args = parser.parse_args()
     subprogram_pathargs = args.pathargs.split(args.pathargs_delim)
     subprogram_stdins = args.stdins.split(args.stdins_delim)
+    succinct = args.succinct
 
-    out = undaemonize(subprogram_pathargs, subprogram_stdins)
+    out = undaemonize(subprogram_pathargs, subprogram_stdins, succinct)
     print(out, end='')
     
 
