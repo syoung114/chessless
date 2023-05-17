@@ -13,6 +13,7 @@ To run Stockfish stateless in this directory, run the following code:
 ```console
 $ chmod +x init.sh
 $ ./init.sh
+$ cd src/
 $ python
 Python xxxxxxxxxxxxxxxxxx on linux
 Type "help", "copyright", "credits" or "license" for more information.
