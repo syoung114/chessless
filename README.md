@@ -5,6 +5,8 @@ To access most of its commands, Stockfish is normally run interactively as a pro
 
 Also includes a script that you can run to play chess against Stockfish on a curses-style interface. Currently this script is just a proof-of-concept with basic features.
 
+![playchess example](doc/playchess.GIF)
+
 ## Usage
 To run Stockfish stateless in this directory, run the following code:
 
@@ -23,7 +25,7 @@ You may also run undaemonize via non-interactive python assuming that you have r
 
 For the list of Stockfish commands, refer to its official [Commands](https://github.com/official-stockfish/Stockfish/wiki/Commands) documentation.
 
-The playchess script is simply run by:
+The playchess script is run by installing requirements.txt within your virtual environment of choice and running:
 
 ```
 $ python playchess.py white|black [--depth int]
