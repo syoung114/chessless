@@ -1,5 +1,5 @@
-import curses
 import undaemonize
+import curses
 import chess
 import re
 import argparse
@@ -7,24 +7,33 @@ import argparse
 START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 play_as_black = False
 depth = 5
+fen = START_FEN
+board = chess.Board(fen)
+regex = re.compile(r"[a-h][1-8][a-h][1-8](b|n|r|q)?")
+
+def get_arguments():
+    parser = argparse.ArgumentParser(description='Small script to play chess in a curses interface')
+    parser.add_argument('white_or_black', type=str, help='Do you want to play as white or as black?')
+    parser.add_argument('--depth', default=depth, type=int, help='How deep should stockfish analyze? Increases difficulty but also thinking time.')
+
+    args = parser.parse_args()
+    play_as_black_inner = args.white_or_black == 'black'
+    depth_inner = args.depth
+    return play_as_black_inner, depth_inner
+    
+def stockfish_move():
+    stockfish = undaemonize.undaemonize(
+        './Stockfish/src/stockfish',
+        f'position fen \'{board.fen()}\';go depth {depth}'.split(';'),
+        True
+    ).rstrip()
+
+    sf_move = regex.search(stockfish).group(0)
+    sf_uci = chess.Move.from_uci(sf_move)
+    board.push(sf_uci)
 
 def main(stdscr):
-    fen = START_FEN
-    board = chess.Board(fen)
-    regex = re.compile(r"[a-h][1-8][a-h][1-8](b|n|r|q)?")
-
     quit_synonyms = ['quit', 'exit', 'q', ':q', ':wq']
-
-    def stockfish_move():
-        stockfish = undaemonize.undaemonize(
-            './Stockfish/src/stockfish',
-            f'position fen \'{board.fen()}\';go depth {depth}'.split(';'),
-            True
-        ).rstrip()
-
-        sf_move = regex.search(stockfish).group(0)
-        sf_uci = chess.Move.from_uci(sf_move)
-        board.push(sf_uci)
 
     def player_move(cmd):
         uci_cmd = chess.Move.from_uci(cmd)
@@ -75,15 +84,5 @@ def main(stdscr):
         stdscr.refresh()
 
 if __name__ == '__main__': #no reason to import this code
-    parser = argparse.ArgumentParser(description='Small script to play chess in a curses interface')
-    parser.add_argument('white_or_black', type=str, help='Do you want to play as white or as black?')
-    parser.add_argument('--depth', default=depth, type=int, help='How deep should stockfish analyze? Increases difficulty but also thinking time.')
-
-    args = parser.parse_args()
-    if args.white_or_black in ['white', 'black']:
-        play_as_black = args.white_or_black == 'black'
-        depth = args.depth
-
-        curses.wrapper(main)
-    else:
-        print("invalid side. choose either white or black.")
+    play_as_black, depth = get_arguments()
+    curses.wrapper(main)
